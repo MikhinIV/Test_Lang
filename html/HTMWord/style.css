@@ -1,0 +1,93 @@
+body{
+    background-color: #00694c;
+    color: white;
+    font-size: 42px;    
+    
+}
+.wrong{
+    color: red;   
+    text-decoration:    line-through;
+}
+.right{
+}
+
+h2 {
+    margin: 0px;
+    margin-bottom: 0.5em;
+    font-size:  1em;
+}
+
+h1{
+    text-decoration:    underline;
+    font-size:  1.1em;
+    margin: 0px;
+}
+
+.Panel {
+    border: none;
+    margin: 3px;
+    padding:0px 20px;
+    text-align: center;
+}
+.words{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    Justify-content: space-around;
+}
+ 
+p {
+    font-style: italic;
+    padding: 0px;
+    margin: 0px;
+    line-height: 1.2;
+}
+.button {
+    text-align: center;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.1;
+    padding:0px 10px;
+    margin: 0px;
+    border: none;
+    background-color: #00694c;
+    color: white;
+    font-size: 1em;
+
+}
+.button:hover {
+    font-weight: bold;
+}
+.button:focus{
+   outline: none;
+}
+
+.hide {
+    color: #00694c;   
+}
+
+.buttonBlock {
+    display: flex;
+    justify-content: space-around;
+    margin: 3px;
+    padding: 0px;
+}
+
+.last{
+    margin-top: 40px;
+    width:  100%;
+    text-align: center;
+}
+
+
+/*
+.word:active {
+    opacity = '0.4';
+}
+
+.col{ 
+    position: relative;
+}
+.container {
+   
+}
+*/

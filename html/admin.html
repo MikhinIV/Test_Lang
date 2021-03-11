@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Page Title</title>
+  <link rel="stylesheet" type="text/css" href="/static/admin.css">
+ </head>
+ <body>
+    <script>
+        var test = {{ . }}
+    </script>
+    <div class="header">
+        <h1>Редактирование разделов </h1>
+        <input type="text" placeholder="" name="filter" id="filter">
+        <button type="button" class="button"  onclick="onFilter()"  id = "btnFilter">Фильтр</button>
+        <button type="button" class="button"  onclick="onClear()"  id = "btnClear">Очистить</button>
+    </div>    
+    <p class="comment">Для удаления разделов отметье соответствующие темы и нажмите кнопку удалить. Для добавления тему нажмите на раздел "Добавить новую тему". Для редактирования просто нажмите на тему</p>
+    <div id="topic">
+        <a href= adm/New>Добавить новую тему</a>
+        {{range . }}
+        <p name="nametopic"><a href= "adm/{{ .Id }}">{{ .Name }}</a></p>
+        {{end}}
+    </div>    
+ </body>
+ <script> 
+     function onFilter(){
+        var all = document.getElementsByName('nametopic');
+        var find = document.getElementById("filter").value;
+        for (var i = 0; i < all.length; i++) {
+
+            if (all[i].innerText.includes(find)) {
+                all[i].hidden = false;
+            }else {    
+                all[i].hidden = true;
+            }
+        }        
+    }
+    function onClear(){
+        var all = document.getElementsByName('nametopic');
+        find = document.getElementById("filter").value = "";
+        for (var i = 0; i < all.length; i++) {
+            all[i].hidden = false;
+        }
+    }    
+    function init() {
+        //document.getElementById("cap").innerHTML = 'Задача: ' + test[1].Name;
+    }
+    init(); 
+ </script>
+</html>

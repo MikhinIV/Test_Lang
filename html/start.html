@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Page Title</title>
+  <link rel="stylesheet" type="text/css" href="/static/admin.css">
+ </head>
+ <body>
+    <h1>Тесты по русскому языку</h1>
+    <script>
+       var test = {{ . }}
+     </script>
+    <div class = "flexline">
+        <div class="block">
+            <form method="POST" id="form">
+                <div class="container">
+                  <label for="uname"><b>Пользватель</b></label>
+                  <input type="text" placeholder="Enter Username" name="uname" required>
+              
+                  <label for="psw"><b>Пароль</b></label>
+                  <input type="password" placeholder="Enter Password" name="psw" required>
+              
+                  <button type="submit">Login</button>
+                  </label>
+                </div>
+        </div>
+        <div  class="block">
+            <p><a href= "menu">Тестирование</a></p>          
+            <p><a href= "adm" id="adm" >Редактирование</a></p>          
+        </div>
+    </div>
+  <script>
+
+    function onClick(){
+    }
+    if (test.Username != "" && test.User.Role == 1){
+        document.getElementById("adm").style.display = "block";
+    } else {
+        document.getElementById("adm").style.display = "none";
+    }    
+  </script>
+ </body>
+</html>    

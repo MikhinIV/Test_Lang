@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Page Title</title>
+  <link rel="stylesheet" type="text/css" href="/static/admin.css">
+ </head>
+ <body>
+    <h1>Редактор</h1>
+    <script>
+        var test = {{ . }}
+     </script>
+    <div class = "flexline">
+        <div class="block">
+
+            <p><b>Тема:</b><br>
+            <input type="text" id = "tema" size="40" name = "Name" value = "abc"></p>
+            <p><b>Шаблон:</b><br>
+            <select id = "hform" name = "list"> </select></p>
+            <p><b>Количество слов в тесте:</b>
+                <input type="number" id = "count" pattern="[0-9]{,2}" name = "count" value = {{ .Topic.Count }}></p>
+            <p><b>Первая буква:</b>
+                <input type="text" id = "ch1" size="3" name = "ch1" value = {{ .Topic.Ch1}}></p>
+            <p><b>Вторая буква:</b>
+                <input type="text" id = "ch2" size="3" name = "ch2" value = {{ .Topic.Ch2}}></p>
+                    <p><b>Ввод слов</b><Br>вводите слова через запятую, проверяемое место выделять ()<Br>
+            <textarea id = "words" name="words" cols="50" rows="3"></textarea></p>
+            <p><button type="button" class="button last"  onclick="onClick()"  id = "btnAddWord">Записать слова</button></p>
+        </div>
+        <div  class="block">
+            <div class = "testWord" id = "testWord"></div>
+            <p><button type="button" class="button last"  onclick="onDelete()"  id = "btnDelWord">Удалить слова</button></p>
+            <p><button type="button" class="button last"  onclick="onSave()"  id = "btnSave">Сохранить форму</button>
+            <button type="button" class="button last"  onclick="onExit()"  id = "btnExit">Выход</button></p></p>
+        </div>
+    </div>
+  <script>
+
+    function onExit (){
+        history.go(-1);
+    }
+
+    function addWord(newWord) {
+        fragment = document.createDocumentFragment();
+        element = document.getElementById('testWord');  
+        for (let nword of newWord) {
+            var checkbox = document.createElement('input');
+            var label = document.createElement('label');
+            label.innerHTML = nword;
+            checkbox.type = "checkbox";
+            checkbox.name = nword;
+            label.appendChild(checkbox);
+            fragment.appendChild(label);
+        }
+        element.appendChild(fragment);
+    }
+    function onSave(){
+        if (document.getElementById("tema").value.trim = "") {alert("Тема не может быть пустой"); return }
+        var s;
+        var arr = ""
+        var all = document.getElementById("testWord").getElementsByTagName('input');
+        for (var i = 0; i < all.length; i++) {
+            arr = arr + all[i].name + ",";
+        }        
+        s = "tema=" + document.getElementById("tema").value;
+        s = s + "&form=" + document.getElementById("hform").value;        
+        s = s + "&id=" + test.Topic.Id;       
+        s = s + "&count=" + document.getElementById("count").value;       
+        s = s + "&ch1=" + document.getElementById("ch1").value;       
+        s = s + "&ch2=" + document.getElementById("ch2").value;       
+        s = s + "&ch3=''";      
+        s = s + "&word=" + arr.slice(0, -1);         
+//        alert(s);
+        var request = (XMLHttpRequest?new XMLHttpRequest():new ActiveXObject());
+        request.open('POST', 'answ', true);
+        request.setRequestHeader('accept', 'application/json');
+        request.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+        request.send(s);
+        history.go(-1);
+    }
+
+    function onDelete() {
+        var all = document.getElementById("testWord").getElementsByTagName('input');
+        for (var i = all.length - 1; i >= 0; i--) {
+            if (all[i].checked){
+               parent = all[i].parentNode
+               parent.removeChild(all[i]);
+               parent.parentNode.removeChild(parent);
+            }
+        }        
+    }
+
+    function onClick(){
+        var arrStr = document.getElementById("words").value.split(",");
+        var errstr = ""
+        for (var index = 0; index < arrStr.length; ++index) {
+            if (/\((.|)\)/.test(arrStr[index])) {
+                arrStr[index] = arrStr[index].trim();
+            } else { errstr = errstr + "Отсутсвие ( ) в " + arrStr[index] + "\n";
+            }
+        };
+        if (errstr.length > 0) {alert(errstr);
+        }  else {
+            addWord(arrStr);
+            document.getElementById("words").value = "";
+        };
+    }
+
+    document.getElementById("tema").value = test.Topic.Name;
+    var element  = document.getElementById('hform'); 
+    var fragment = document.createDocumentFragment();
+    for (let nameform of test.HForm) {
+        if (test.Topic.FormName == nameform) {
+            fragment.appendChild(new Option(nameform, nameform, false, true));
+        } else {
+            fragment.appendChild(new Option(nameform, nameform));
+        }    
+     }
+    element.appendChild(fragment);
+    addWord(test.Word)
+
+  </script>
+ </body>
+</html>    
