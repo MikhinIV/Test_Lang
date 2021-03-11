@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -355,9 +356,13 @@ func checkToken(next http.Handler) http.Handler {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Println("$PORT must be set")
+	}
 	CurUser = User{0, "", 0, 0, nil}
-
-	db, er := sql.Open("postgres", "user=postgres password=HappyNewYear dbname=Test sslmode=disable")
+	//	db, er := sql.Open("postgres", "user=postgres password=HappyNewYear dbname=Test sslmode=disable")
+	db, er := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if er != nil {
 		log.Println(er)
 	}
@@ -380,7 +385,7 @@ func main() {
 	//	fileServer := http.FileServer(http.Dir("./html/css/"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 	// Используется функция http.ListenAndServe() для запуска нового веб-сервера.
-	log.Println("Запуск веб-сервера на http://127.0.0.1:5000")
-	err := http.ListenAndServe(":5000", mux)
+	log.Println("Запуск веб-сервера на :", port)
+	err := http.ListenAndServe(":"+port, mux)
 	log.Fatal(err)
 }
