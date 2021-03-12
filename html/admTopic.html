@@ -93,7 +93,7 @@
         var arrStr = document.getElementById("words").value.split(",");
         var errstr = ""
         for (var index = 0; index < arrStr.length; ++index) {
-            if (/\((.|)\)/.test(arrStr[index])) {
+            if (/\(.*\)/.test(arrStr[index])) {
                 arrStr[index] = arrStr[index].trim();
             } else { errstr = errstr + "Отсутсвие ( ) в " + arrStr[index] + "\n";
             }

@@ -360,8 +360,8 @@ func main() {
 	if port == "" {
 		log.Println("$PORT must be set")
 	}
+	//	log.Println(os.Getenv("DATABASE_URL"))
 	CurUser = User{0, "", 0, 0, nil}
-	//	db, er := sql.Open("postgres", "user=postgres password=HappyNewYear dbname=Test sslmode=disable")
 	db, er := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if er != nil {
 		log.Println(er)
