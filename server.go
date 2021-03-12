@@ -181,7 +181,7 @@ func admTopic(w http.ResponseWriter, r *http.Request) {
 func insertTopic(data Topic) int {
 	if data.Id == 0 {
 		id := 0
-		database.QueryRow("insert into topic (name, formname) values ($1, $2, $3, $4, $5, $6) returning id", data.Name, data.FormName, data.Count, data.Ch1, data.Ch2, data.Ch3).Scan(&id)
+		database.QueryRow("insert into topic (name, formname, count, ch1, ch2, ch3) values ($1, $2, $3, $4, $5, $6) returning id", data.Name, data.FormName, data.Count, data.Ch1, data.Ch2, data.Ch3).Scan(&id)
 		return id
 	} else {
 		_, err := database.Exec("update topic set name = $2, formname = $3, count = $4, ch1 = $5, ch2 = $6, ch3 = $7 where id = $1", data.Id, data.Name, data.FormName, data.Count, data.Ch1, data.Ch2, data.Ch3)
