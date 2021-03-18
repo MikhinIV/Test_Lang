@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Page Title</title>
+  <link rel="stylesheet" type="text/css" href="/static/carousel.css">
+</head>
+<body>
+    <div class="window">
+        <header id="pageHeader">
+            <h1 id="tema"></h1>
+            <h2 id = "info"></h2>
+        </header>
+        <carousel class="pageCarousel">
+            <div class="words" id="blockwords" > 
+            </div>
+        </carousel>
+        <point class="pagePoint">
+            <div class="point" id="point"> 
+            </div>
+        </point>
+        <nav class="pageNav">
+            <div class="nav"> 
+                <button type="button" class="button last"  onclick="onUp(3)"  id = "btnUp">Вверх</button>
+                <button type="button" class="button last"  onclick="onDown(3)"  id = "btnDown">Вниз</button>
+            </div>
+        </nav>
+        <footer id="pageFooter">
+            <button type="button" class="button last"  onclick="onClick()"  id = "btnFinish">Проверить</button>
+        </footer>
+    </div>
+    <script>
+//  <link rel="stylesheet" type="text/css" href="./css/carousel.css">
+//        var test = {"Topic":{"Id":2,"Name":"Приставки пре-при","FormName":"Слитно-раздельно","Count":15,"Ch1":"е","Ch2":"и","Ch3":"''"},"Word":["пр(е)большой","пр(е)увеличить","пр(е)ступать закон","пр(е)вращать","пр(е)ображать","пр(и)морский","пр(и)брежный","пр(и)ступать к работе","пр(и)глушить","пр(и)вилегия","пр(е)амбула","пр(е)следовать","камень пр(е)ткновения","пр(и)сутствовать","пр(е)бывать в Москве","пр(е)емник","пр(и)ёмник"],"HForm":["В две корзины","В три корзины","Слитно-раздельно","Вставить букву"]}
+        var test = {{ . }}
+       
+        //Задание
+        var task = `Нажимая на слово определите правильное написание`;
+        //Количество слов в тесте
+        var countword = test.Topic.Count;
+        //Буква 1
+        var name1 = test.Topic.Ch1;
+        //Буква 2
+        var name2 = test.Topic.Ch2;
+        var arr_word = [], arr1 = [];
+        var current = 0, next = 1, prev = countword-1;
+        var el = document.getElementById("blockwords");
+        el.addEventListener("wheel", onWheel);
+        var sphere = document.querySelector(".point");
+        sphere.addEventListener('click', function (e) {
+            var target = e.target
+            if (target.classList.contains('sphere')) {
+               showButton(Number(target.id.substring(5)));
+            }
+        });
+
+        function onWheel(event){
+            event.preventDefault();
+            var delta = 0;
+            delta = event.wheelDelta/120;
+            if (delta > 0) {onUp(1)}
+            else {onDown(1)}
+        }
+
+        function nextel(i){
+            i++;
+            if (i == countword) {i = 0;}
+            return i;
+        }
+        function prevel(i){
+            if (i == 0) {i = countword;}
+            i--;
+            return i;
+        }
+
+        function onUp(step){
+            var ncur = current;
+            for (let i = 0; i < step; i++) {
+                ncur = prevel(ncur);
+            }
+            showButton(ncur);
+        }
+            
+        function onDown(step){
+            var ncur = current;
+            for (let i = 0; i < step; i++) {
+                ncur = nextel(ncur);
+            }
+            showButton(ncur);
+        }
+
+        function checkwords() {
+            let sum = 0;
+            let panelList = document.getElementsByClassName("button letter");
+            for (let i = 0; i < panelList.length; i++) {
+            
+               if (panelList[i].innerHTML.replace(/<[^>]+>/g,'')  == arr_word[i].replace(/\(|\)/g,'')) {
+                   sum++;
+                   panelList[i].className = "button letter right";
+               } else {
+                   panelList[i].className = "button letter wrong";
+                   document.getElementById("point" + i.toString()).className = "sphere red";
+                }
+            }
+            return sum;
+        }
+        
+        function checktest() {
+            var countRight = checkwords();
+            var itog = "5";
+            if (countRight < countword) {itog = "4"}
+            if (countRight < countword * 0.8) {itog = "3"}
+            if (countRight < countword / 2) {itog = '<font color="red">2</font>'}
+            document.getElementById("info").innerHTML = 'Правильных ответов - ' + checkwords() + ". Оценка - " + itog;
+        }
+        
+        function onClick(){
+            let lastButton = document.getElementById("btnFinish");
+            if (lastButton.innerHTML == "Проверить") {
+                checktest();
+                lastButton.innerHTML = "Старт";
+            } else {
+                generatewords();
+                lastButton.innerText = "Проверить";
+            }
+        }
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+        }
+        
+        function init() {
+            document.getElementById("tema").innerHTML = test.Topic.Name;
+            document.getElementById("info").innerHTML = 'Задача: ' + task;
+            for (let i = 0; i < countword; i++) {
+                let newDiv = document.createElement("div");
+                newDiv.id = "point" + i.toString();
+                document.getElementById("point").appendChild(newDiv);
+                newDiv = document.createElement("button");
+                newDiv.onclick = clickB;
+                newDiv.name = "0";
+                newDiv.id = i.toString();
+                document.getElementById("blockwords").appendChild(newDiv);
+            }
+        }
+
+        function showPoint(index){
+            if (document.getElementById(index.toString()).className.includes("wrong")) { 
+                document.getElementById("point" + index.toString()).className = "sphere red";
+                return;
+            }    
+            if (document.getElementById(index.toString()).innerHTML.includes("...")) {
+                        document.getElementById("point" + index.toString()).className = "sphere white";
+                    } else {document.getElementById("point" + index.toString()).className = "sphere green";}
+            return;
+        }
+
+        function showButton(what){
+            document.getElementById(current.toString()).hidden = true;   
+            document.getElementById(prev.toString()).hidden = true;   
+            document.getElementById(next.toString()).hidden = true; 
+            showPoint(prev);showPoint(current);showPoint(next);
+            current = what;  prev = prevel(current);  next = nextel(what);
+            document.getElementById(current.toString()).hidden = false;   
+            document.getElementById(prev.toString()).hidden = false;   
+            document.getElementById(next.toString()).hidden = false;   
+            if (document.getElementById("point" + prev.toString()).className.includes("red")) {
+                document.getElementById(prev.toString()).className = "button letter prev wrong";}
+            else {document.getElementById(prev.toString()).className = "button letter prev";}   
+            if (document.getElementById("point" + current.toString()).className.includes("red")) {
+                document.getElementById(current.toString()).className = "button letter center wrong";}
+            else {document.getElementById(current.toString()).className = "button letter center"};    
+            if (document.getElementById("point" + next.toString()).className.includes("red")) {
+                document.getElementById(next.toString()).className = "button letter next wrong"}
+            else {document.getElementById(next.toString()).className = "button letter next"};    
+            document.getElementById("point" + prev.toString()).className = "sphere blue";
+            document.getElementById("point" + current.toString()).className = "sphere blue"
+            document.getElementById("point" + next.toString()).className = "sphere blue";
+        }
+
+        function clickB(e) {
+            if (this.name == "0" || this.name == "2"){
+                this.innerHTML = arr_word[this.id].slice(0, arr_word[this.id].indexOf("(")) + '<b>' + name1 + '</b>' + arr_word[this.id].slice(arr_word[this.id].indexOf(")") + 1);
+                this.name = "1";
+            } else {
+                this.innerHTML = arr_word[this.id].slice(0, arr_word[this.id].indexOf("(")) + '<b>' + name2 + '</b>' + arr_word[this.id].slice(arr_word[this.id].indexOf(")") + 1);
+                this.name = "2";
+
+            }
+        }
+        
+        function generatewords() {
+            arr1 = test.Word.slice();
+            arr_word.splice(0, arr_word.length);
+            document.getElementById("info").innerHTML = 'Задача: ' + task;
+            for (let i = 0; i < countword; i++) {
+                random = getRandomInt(0, arr1.length);
+                let text = arr1[random].trim();
+                document.getElementById(i.toString()).innerHTML = text.slice(0, text.indexOf("(")) + '...' + text.slice(text.indexOf(")") + 1);
+                document.getElementById(i.toString()).className = "button letter";
+                document.getElementById(i.toString()).hidden = true;
+                document.getElementById("point" + i.toString()).className = "sphere white";
+                document.getElementById("point" + i.toString()).title = document.getElementById(i.toString()).innerHTML;
+                arr_word.push(text);
+                arr1.splice(random, 1);
+            }    
+            current = 0;
+            next = 1;
+            prev = countword-1;
+            showButton(current);
+        }
+     
+    </script>
+    <script> 
+        init(); 
+        generatewords();
+    </script>
+
+</body>
+</html>

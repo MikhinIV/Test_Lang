@@ -42,7 +42,11 @@
                 buttonsList[i].className = "button letter hide";
             }
             var countOk = checkwords();
-            document.getElementById("info").innerHTML = 'Правильных ответов - ' + countOk;
+            var itog = "5";
+            if (countOk < countword) {itog = "4"}
+            if (countOk < countword * 0.8) {itog = "3"}
+            if (countOk < countword / 2) {itog = '<font color="red">2</font>'}
+            document.getElementById("info").innerHTML = 'Правильных ответов - ' + countOk + ". Оценка - " + itog;
         }
         
         function onClick(){

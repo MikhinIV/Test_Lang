@@ -1,6 +1,5 @@
 {
-    "В две корзины" : "html2.html",
-    "В три корзины" : "html3.html",
     "Слитно-раздельно" : "together.html",
-    "Вставить букву" : "twoLetter.html"
+    "Вставить букву" : "twoLetter.html",
+    "Карусель" : "carousel.html"
 }            

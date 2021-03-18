@@ -52,6 +52,9 @@ p {
     margin: 0px;
     line-height: 1.2;
 }
+.letter{
+    font-style: italic;   
+}
 .button {
     text-align: center;
     padding: 0.25rem 0.5rem;
@@ -62,8 +65,8 @@ p {
     background-color: #00694c;
     color: white;
     font-size: 1em;
-
 }
+
 .button:hover {
     font-weight: bold;
 }
@@ -87,7 +90,6 @@ p {
     width:  100%;
     text-align: center;
 }
-
 .wrong{
     color: red;   
     text-decoration:    line-through;

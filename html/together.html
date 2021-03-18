@@ -37,7 +37,12 @@
         }
         
         function checktest() {
-            document.getElementById("info").innerHTML = 'Правильных ответов - ' + checkwords();
+            var countRight = checkwords();
+            var itog = "5";
+            if (countRight < countword) {itog = "4"}
+            if (countRight < countword * 0.8) {itog = "3"}
+            if (countRight < countword / 2) {itog = '<font color="red">2</font>'}
+            document.getElementById("info").innerHTML = 'Правильных ответов - ' + checkwords() + ". Оценка - " + itog;
         }
         
         function onClick(){

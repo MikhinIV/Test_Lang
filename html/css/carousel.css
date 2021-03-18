@@ -1,0 +1,156 @@
+body{
+    background-color: #00694c;
+    color: white;
+    font-size: 42px;    
+    
+}
+.window{
+    height: 100vh;
+    display: grid;
+    grid-template-areas: 
+    "header header header"
+    "carousel point nav"
+    "footer footer footer";
+    grid-template-rows: 1fr 5fr 1fr;
+    grid-template-columns: 1fr 5% 20%;
+    grid-gap: 1vw;
+    margin: 0;
+}
+#pageHeader {
+    grid-area: header;
+}
+#pageFooter {
+    grid-area: footer;
+}  
+#pageCarousel {
+    grid-area: carousel;
+}  
+#pagePoint {
+    grid-area: point;
+}  
+#pageNav {
+    grid-area: nav;
+}  
+.nav, .point {
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.white {
+    background-color: white;
+}
+.green {
+    background-color: greenyellow;
+}
+.blue {
+    background-color: blue;
+}
+.red {
+    background-color: red;
+}
+.sphere {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    margin: 5%;
+/*    border: 3px solid blue;*/
+}
+.center{
+    order: 2;
+}
+
+.prev{
+    order:1;
+    transform:  scale(0.9,0.9);
+}
+.next{
+    order:3;
+    transform:  scale(0.9,0.9);
+}
+
+div.block {
+    display: inline-block;
+    width: 40%; 
+}   
+
+label {
+    display: block;
+}
+
+h2 {
+    margin: 0px;
+    margin-bottom: 0.5em;
+    font-size:  1em;
+}
+
+h1{
+    text-decoration:    underline;
+    font-size:  1.1em;
+    margin: 0px;
+}
+
+.Panel {
+    border: none;
+    margin: 3px;
+    padding:0px 20px;
+    text-align: center;
+}
+
+.base{
+    height: 100%;
+}
+.words{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+ 
+p {
+    font-style: italic;
+    padding: 0px;
+    margin: 0px;
+    line-height: 1.2;
+}
+.letter{
+    font-style: italic;   
+}
+
+.button {
+    text-align: center;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.1;
+    padding:0px 10px;
+    margin: 0px;
+    border: none;
+    background-color: #00694c;
+    color: white;
+    font-size: 1em;
+}
+
+.button:hover {
+    font-weight: bold;
+}
+.button:focus{
+   outline: none;
+}
+
+.buttonBlock {
+    display: flex;
+    justify-content: space-around;
+    margin: 3px;
+    padding: 0px;
+}
+
+.last{
+    margin-top: 40px;
+    width:  100%;
+    text-align: center;
+}
+.wrong{
+    color: red;   
+    text-decoration:    line-through;
+}
