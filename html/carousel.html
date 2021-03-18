@@ -53,6 +53,14 @@
                showButton(Number(target.id.substring(5)));
             }
         });
+        el.addEventListener("touchmove", function (e) {
+            e.preventDefault();
+            var touches = e.changedTouches;
+            var startTouch = touches[0].pageX; 
+            var endTouch = touches[touches.length - 1].pageX; 
+            if ((startTouch - endTouch) > 0) {onUp(1)}
+            else {onDown(1)}            
+        });
 
         function onWheel(event){
             event.preventDefault();
