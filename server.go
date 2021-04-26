@@ -206,6 +206,7 @@ func insertWord(arr []string, id int) {
 }
 
 func answ(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Update words")
 	r.ParseForm()
 	var data Topic
 	var arrWord = []string{}
