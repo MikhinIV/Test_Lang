@@ -7,7 +7,8 @@
  <body>
     <h1>Редактор</h1>
     <script>
-        var test = {{ . }}
+        var test = {{ . }};
+        var countWord = 0;
      </script>
     <div class = "flexline">
         <div class="block">
@@ -27,6 +28,7 @@
             <p><button type="button" class="button last"  onclick="onClick()"  id = "btnAddWord">Записать слова</button></p>
         </div>
         <div  class="block">
+            <p id = "countWord"></p>
             <div class = "testWord" id = "testWord"></div>
             <p><button type="button" class="button last"  onclick="onDelete()"  id = "btnDelWord">Удалить слова</button></p>
             <p><button type="button" class="button last"  onclick="onSave()"  id = "btnSave">Сохранить форму</button>
@@ -50,6 +52,7 @@
             checkbox.name = nword;
             label.appendChild(checkbox);
             fragment.appendChild(label);
+            countWord++;
         }
         element.appendChild(fragment);
     }
@@ -71,11 +74,11 @@
         s = s + "&word=" + arr.slice(0, -1);         
 //        alert(s);
         var request = (XMLHttpRequest?new XMLHttpRequest():new ActiveXObject());
-        request.open('POST', 'answ', true);
+        request.open('POST', '', true);
         request.setRequestHeader('accept', 'application/json');
         request.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
         request.send(s);
-        history.go(-1);
+   //     history.go(-1);
     }
 
     function onDelete() {
@@ -85,8 +88,10 @@
                parent = all[i].parentNode
                parent.removeChild(all[i]);
                parent.parentNode.removeChild(parent);
+               countWord--;
             }
         }        
+        document.getElementById("countWord").innerHTML = "Количество слов: " + countWord; 
     }
 
     function onClick(){
@@ -101,6 +106,7 @@
         if (errstr.length > 0) {alert(errstr);
         }  else {
             addWord(arrStr);
+            document.getElementById("countWord").innerHTML = "Количество слов: " + countWord; 
             document.getElementById("words").value = "";
         };
     }
@@ -116,8 +122,8 @@
         }    
      }
     element.appendChild(fragment);
-    addWord(test.Word)
-
+    addWord(test.Word);
+    document.getElementById("countWord").innerHTML = "Количество слов: " + countWord; 
   </script>
  </body>
 </html>    

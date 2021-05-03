@@ -164,18 +164,23 @@ func menu(w http.ResponseWriter, r *http.Request) {
 }
 
 func admTopic(w http.ResponseWriter, r *http.Request) {
-	page := r.URL.Path[lenPath:]
-	wp := AdmTopic{}
-	wp.HForm = hform
-	if page != "New" {
-		wp.Topic = getTopic(r.URL.Path[lenPath:])[0]
-		wp.Word = getWord(r.URL.Path[lenPath:])
+	if r.Method == "POST" {
+		fmt.Println("POST")
+		answ(r)
 	} else {
-		wp.Topic = Topic{0, "", "           ", 0, "", "", ""}
-		wp.Word = []string{}
+		page := r.URL.Path[lenPath:]
+		wp := AdmTopic{}
+		wp.HForm = hform
+		if page != "New" {
+			wp.Topic = getTopic(r.URL.Path[lenPath:])[0]
+			wp.Word = getWord(r.URL.Path[lenPath:])
+		} else {
+			wp.Topic = Topic{0, "", "           ", 0, "", "", ""}
+			wp.Word = []string{}
+		}
+		tmpl := template.Must(template.ParseFiles("./html/admTopic.html"))
+		tmpl.Execute(w, wp)
 	}
-	tmpl := template.Must(template.ParseFiles("./html/admTopic.html"))
-	tmpl.Execute(w, wp)
 }
 
 func insertTopic(data Topic) int {
@@ -205,7 +210,7 @@ func insertWord(arr []string, id int) {
 	}
 }
 
-func answ(w http.ResponseWriter, r *http.Request) {
+func answ(r *http.Request) {
 	fmt.Println("Update words")
 	r.ParseForm()
 	var data Topic
@@ -377,7 +382,7 @@ func main() {
 	mux.HandleFunc("/menu", menu)
 	mux.HandleFunc("/menu/", home)
 	mux.Handle("/adm", checkToken(finalHandler))
-	mux.Handle("/adm/answ", checkToken(http.HandlerFunc(answ)))
+	//	mux.Handle("/adm/answ", checkToken(http.HandlerFunc(answ)))
 	mux.Handle("/adm/", checkToken(http.HandlerFunc(admTopic)))
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./html/css/")})
