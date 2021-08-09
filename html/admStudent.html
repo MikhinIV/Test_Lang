@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Page Title</title>
+  <link rel="stylesheet" type="text/css" href="/static/admStudent.css">
+  <script>
+    var test = {{ . }};
+</script>
+
+ </head>
+ <body>
+    <div class = "flexline">
+        <div class="block" id = "class">
+            <h1>Классы</h1>
+            <button type="button" class="button last"  onclick="onClick()"  id = "btnAddWord">Добавить класс</button>
+    </div>
+        <div  class="block">
+            <p id = "countWord"></p>
+            <div class = "testWord" id = "testWord">
+                <table id=student>
+
+                </table>
+            </div>
+            <p><button type="button" class="button last"  onclick="onDelete()"  id = "btnDelWord">Удалить слова</button></p>
+            <p><button type="button" class="button last"  onclick="onSave()"  id = "btnSave">Сохранить форму</button>
+            <button type="button" class="button last"  onclick="onExit()"  id = "btnExit">Выход</button></p></p>
+        </div>
+    </div>
+  <script>
+
+    function onExit (){
+        history.go(-1);
+    }
+
+    function addWord(newWord) {
+        fragment = document.createDocumentFragment();
+        element = document.getElementById('testWord');  
+        for (let nword of newWord) {
+            var checkbox = document.createElement('input');
+            var label = document.createElement('label');
+            label.innerHTML = nword;
+            checkbox.type = "checkbox";
+            checkbox.name = nword;
+            label.appendChild(checkbox);
+            fragment.appendChild(label);
+            countWord++;
+        }
+        element.appendChild(fragment);
+    }
+    function onSave(){
+        if (document.getElementById("tema").value.trim = "") {alert("Тема не может быть пустой"); return }
+        var s;
+        var arr = ""
+        var all = document.getElementById("testWord").getElementsByTagName('input');
+        for (var i = 0; i < all.length; i++) {
+            arr = arr + all[i].name + ",";
+        }        
+        s = "tema=" + document.getElementById("tema").value;
+        s = s + "&form=" + document.getElementById("hform").value;        
+        s = s + "&id=" + test.Topic.Id;       
+        s = s + "&count=" + document.getElementById("count").value;       
+        s = s + "&ch1=" + document.getElementById("ch1").value;       
+        s = s + "&ch2=" + document.getElementById("ch2").value;       
+        s = s + "&ch3=''";      
+        s = s + "&word=" + arr.slice(0, -1);         
+//        alert(s);
+        var request = (XMLHttpRequest?new XMLHttpRequest():new ActiveXObject());
+        request.open('POST', '', true);
+        request.setRequestHeader('accept', 'application/json');
+        request.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+        request.send(s);
+   //     history.go(-1);
+    }
+
+    function onDelete() {
+        var all = document.getElementById("testWord").getElementsByTagName('input');
+        for (var i = all.length - 1; i >= 0; i--) {
+            if (all[i].checked){
+               parent = all[i].parentNode
+               parent.removeChild(all[i]);
+               parent.parentNode.removeChild(parent);
+               countWord--;
+            }
+        }        
+        document.getElementById("countWord").innerHTML = "Количество слов: " + countWord; 
+    }
+
+    function onClick(){
+        var arrStr = document.getElementById("words").value.split(",");
+        var errstr = ""
+        for (var index = 0; index < arrStr.length; ++index) {
+            if (/\(.*\)/.test(arrStr[index])) {
+                arrStr[index] = arrStr[index].trim();
+            } else { errstr = errstr + "Отсутсвие ( ) в " + arrStr[index] + "\n";
+            }
+        };
+        if (errstr.length > 0) {alert(errstr);
+        }  else {
+            addWord(arrStr);
+            document.getElementById("countWord").innerHTML = "Количество слов: " + countWord; 
+            document.getElementById("words").value = "";
+        };
+    }
+    function showStudent(evt){
+       alert(evt.target.id);
+    }    
+
+    var tbody = document.getElementById("class");
+
+    for (let nameclass of test.Class) {
+        var btn = document.createElement("button")
+        btn.className = "button last"
+        btn.id = nameclass.Id
+        btn.innerHTML = nameclass.ClassName
+        btn.onclick= showStudent
+        tbody.appendChild(btn);
+    }
+//    document.getElementById("tema").value = test.Topic.Name;
+//    var element  = document.getElementById('hform'); 
+//    var fragment = document.createDocumentFragment();
+//    for (let nameform of test.HForm) {
+//        if (test.Topic.FormName == nameform) {
+//            fragment.appendChild(new Option(nameform, nameform, false, true));
+ //       } else {
+ //           fragment.appendChild(new Option(nameform, nameform));
+ //       }    
+//     }
+ //   element.appendChild(fragment);
+ //   addWord(test.Word);
+ //   document.getElementById("countWord").innerHTML = "Количество слов: " + countWord; 
+  </script>
+ </body>
+</html>    
