@@ -25,18 +25,23 @@
         </div>
         <div  class="block">
             <p><a href= "menu">Тестирование</a></p>          
-            <p><a href= "adm" id="adm" >Редактирование</a></p>          
+            <p><a href= "adm" id="adm" class="adm" >Редактирование тестов</a></p>  
+            <p><a href= "students" id="adm" class="adm" >Ученики</a></p>          
         </div>
     </div>
   <script>
 
     function onClick(){
     }
-    if (test.Username != "" && test.User.Role == 1){
-        document.getElementById("adm").style.display = "block";
-    } else {
-        document.getElementById("adm").style.display = "none";
-    }    
+    let admelements = document.querySelectorAll('.adm');
+    for (let elem of admelements) {
+      if (test.Username != "" && test.User.Role == 1){
+        //document.getElementById("adm").style.display = "block";
+        elem.style.display = "block";
+      } else {
+        elem.style.display = "none";
+      }
+    }      
   </script>
  </body>
 </html>    

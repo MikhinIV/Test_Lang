@@ -11,17 +11,18 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	_ "github.com/lib/pq"
+
+	//	stud "github.com/server/students"
 	"golang.org/x/crypto/scrypt"
 )
 
 type Token struct {
 	Role int
+	Id   int
 	jwt.StandardClaims
 }
 type Account struct {
@@ -69,6 +70,7 @@ var htmlf htmlform
 var hform []string
 var salt []byte
 var CurUser User
+var account = &Account{}
 
 func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	f, err := nfs.fs.Open(path)
@@ -87,145 +89,6 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 		}
 	}
 	return f, nil
-}
-
-func home(w http.ResponseWriter, r *http.Request) {
-	page := r.URL.Path[strings.LastIndex(r.URL.Path, "/")+1:]
-	wp := AdmTopic{}
-	wp.HForm = hform
-	wp.Topic = getTopic(page)[0]
-	wp.Word = getWord(page)
-	ts, err := template.ParseFiles("./html/" + htmlf[wp.Topic.FormName])
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
-		return
-	}
-	err = ts.Execute(w, wp)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
-	}
-}
-
-func getTopic(id string) []Topic {
-	s := "SELECT * FROM topic"
-	if id != "all" {
-		s = "SELECT * FROM topic WHERE id = " + id
-	}
-	rows, err := database.Query(s)
-	if err != nil {
-		log.Println(err)
-	}
-	defer rows.Close()
-	topics := []Topic{}
-	for rows.Next() {
-		p := Topic{}
-		err := rows.Scan(&p.Id, &p.Name, &p.FormName, &p.Count, &p.Ch1, &p.Ch2, &p.Ch3)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		topics = append(topics, p)
-	}
-	return topics
-}
-
-func getWord(id string) []string {
-	s := "SELECT * FROM words WHERE id = " + id
-	rows, err := database.Query(s)
-	if err != nil {
-		log.Println(err)
-	}
-	defer rows.Close()
-	words := []string{}
-	for rows.Next() {
-		p := Word{}
-		err := rows.Scan(&p.Id, &p.Word)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		words = append(words, p.Word)
-	}
-	return words
-}
-
-func adm(w http.ResponseWriter, r *http.Request) {
-	p := getTopic("all")
-	tmpl := template.Must(template.ParseFiles("./html/admin.html"))
-	tmpl.Execute(w, p)
-}
-
-func menu(w http.ResponseWriter, r *http.Request) {
-	p := getTopic("all")
-	tmpl := template.Must(template.ParseFiles("./html/menu.html"))
-	tmpl.Execute(w, p)
-}
-
-func admTopic(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		fmt.Println("POST")
-		answ(r)
-	} else {
-		page := r.URL.Path[lenPath:]
-		wp := AdmTopic{}
-		wp.HForm = hform
-		if page != "New" {
-			wp.Topic = getTopic(r.URL.Path[lenPath:])[0]
-			wp.Word = getWord(r.URL.Path[lenPath:])
-		} else {
-			wp.Topic = Topic{0, "", "           ", 0, "", "", ""}
-			wp.Word = []string{}
-		}
-		tmpl := template.Must(template.ParseFiles("./html/admTopic.html"))
-		tmpl.Execute(w, wp)
-	}
-}
-
-func insertTopic(data Topic) int {
-	if data.Id == 0 {
-		id := 0
-		database.QueryRow("insert into topic (name, formname, count, ch1, ch2, ch3) values ($1, $2, $3, $4, $5, $6) returning id", data.Name, data.FormName, data.Count, data.Ch1, data.Ch2, data.Ch3).Scan(&id)
-		return id
-	} else {
-		_, err := database.Exec("update topic set name = $2, formname = $3, count = $4, ch1 = $5, ch2 = $6, ch3 = $7 where id = $1", data.Id, data.Name, data.FormName, data.Count, data.Ch1, data.Ch2, data.Ch3)
-		if err != nil {
-			fmt.Println(err)
-			return 0
-		}
-		return data.Id
-	}
-}
-func insertWord(arr []string, id int) {
-	_, err := database.Exec("delete from words where id = $1", id)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for _, value := range arr {
-		_, err := database.Exec("insert into words (id, word) values ($1, $2)", id, value)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-}
-
-func answ(r *http.Request) {
-	fmt.Println("Update words")
-	r.ParseForm()
-	var data Topic
-	var arrWord = []string{}
-	data.Id, _ = strconv.Atoi(r.FormValue("id"))
-	data.Name = r.FormValue("tema")
-	data.FormName = r.FormValue("form")
-	data.Count, _ = strconv.Atoi(r.FormValue("count"))
-	data.Ch1 = r.FormValue("ch1")
-	data.Ch2 = r.FormValue("ch2")
-	data.Ch3 = r.FormValue("ch3")
-	arrWord = strings.Split(r.FormValue("word"), ",")
-	//	arrWord = append(arrWord, r.FormValue("word"))
-	fmt.Println(r.FormValue("word"))
-	insertWord(arrWord, insertTopic(data))
 }
 
 func readjson() (htmlform, []string) {
@@ -279,7 +142,7 @@ func addCookie(w http.ResponseWriter, value string, ttl time.Duration) {
 }
 
 func start(w http.ResponseWriter, r *http.Request) {
-	account := &Account{}
+	//	account := &Account{}
 	if r.Method == "POST" {
 		addCookie(w, "", -30*time.Minute)
 		err := r.ParseForm()
@@ -288,12 +151,17 @@ func start(w http.ResponseWriter, r *http.Request) {
 		}
 		name := r.FormValue("uname")
 		psw := r.FormValue("psw")
-		CurUser, find := getUser(name, psw)
+		find := false
+		CurUser, find = getUser(name, psw)
+		//		fmt.Println("Код")
+
+		//		fmt.Println(CurUser.Id)
 		if find && CurUser.Role == 1 {
 
-			tk := &Token{Role: CurUser.Role}
+			tk := &Token{Role: CurUser.Role, Id: CurUser.Id}
 			token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 			tokenString, _ := token.SignedString([]byte("token_password"))
+
 			account.Token = tokenString
 			account.User = CurUser
 			account.User.Userpassword = nil
@@ -306,6 +174,7 @@ func start(w http.ResponseWriter, r *http.Request) {
 		account.Token = ""
 		account.User = CurUser
 	}
+
 	tmpl := template.Must(template.ParseFiles("./html/start.html"))
 	tmpl.Execute(w, account)
 }
@@ -356,6 +225,7 @@ func checkToken(next http.Handler) http.Handler {
 		//Всё прошло хорошо, продолжаем выполнение запроса
 		fmt.Println("Role %", tk.Role) //Полезно для мониторинга
 		ctx := context.WithValue(r.Context(), "role", tk.Role)
+		CurUser.Id = tk.Id
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
@@ -382,7 +252,7 @@ func main() {
 	mux.HandleFunc("/menu", menu)
 	mux.HandleFunc("/menu/", home)
 	mux.Handle("/adm", checkToken(finalHandler))
-	//	mux.Handle("/adm/answ", checkToken(http.HandlerFunc(answ)))
+	mux.Handle("/students", checkToken(http.HandlerFunc(AdmStudents)))
 	mux.Handle("/adm/", checkToken(http.HandlerFunc(admTopic)))
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./html/css/")})

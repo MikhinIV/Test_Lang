@@ -3,29 +3,29 @@
  <head>
   <title>Page Title</title>
   <link rel="stylesheet" type="text/css" href="/static/admin.css">
+  <script>
+    var test = {{ . }};
+    var countWord = 0;
+</script>
+
  </head>
  <body>
-    <h1>Редактор</h1>
-    <script>
-        var test = {{ . }};
-        var countWord = 0;
-     </script>
     <div class = "flexline">
         <div class="block">
-
-            <p><b>Тема:</b><br>
-            <input type="text" id = "tema" size="40" name = "Name" value = "abc"></p>
+            <h1>Редактор</h1>
+            <p><b>Тема:</b><br></p>
+            <input type="text" id = "tema" name = "Name" class = "input" value = "abc">
             <p><b>Шаблон:</b><br>
             <select id = "hform" name = "list"> </select></p>
-            <p><b>Количество слов в тесте:</b>
-                <input type="number" id = "count" pattern="[0-9]{,2}" name = "count" value = {{ .Topic.Count }}></p>
+            <p><b>Количество слов в тесте:</b></p>
+                <input type="number" id = "count" pattern="[0-9]{,2}" name = "count" value = {{ .Topic.Count }}>
             <p><b>Первая буква:</b>
                 <input type="text" id = "ch1" size="3" name = "ch1" value = {{ .Topic.Ch1}}></p>
             <p><b>Вторая буква:</b>
                 <input type="text" id = "ch2" size="3" name = "ch2" value = {{ .Topic.Ch2}}></p>
-                    <p><b>Ввод слов</b><Br>вводите слова через запятую, проверяемое место выделять ()<Br>
-            <textarea id = "words" name="words" cols="50" rows="3"></textarea></p>
-            <p><button type="button" class="button last"  onclick="onClick()"  id = "btnAddWord">Записать слова</button></p>
+                    <p><b>Ввод слов</b><Br>вводите слова через запятую, проверяемое место выделять ()<Br></p>
+            <textarea id = "words" name="words" class = "input" rows="3"></textarea>
+            <button type="button" class="button last"  onclick="onClick()"  id = "btnAddWord">Записать слова</button>
         </div>
         <div  class="block">
             <p id = "countWord"></p>
